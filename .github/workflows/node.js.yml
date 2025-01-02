@@ -27,9 +27,11 @@ jobs:
     - run: npm run build --if-present
       name: Build Project 
 
+  test:
     - run: npm test
       name: Run Tests
-    
+
+  deploy:        
     - name: Deploy to Amazon Lightsail
       if: success()
       env:
