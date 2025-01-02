@@ -16,4 +16,12 @@ describe('Test Endpoints', () => {
         expect(res.statusCode).toEqual(200);
         expect(res.body).toEqual('Greetings to John!');
     });
+
+    it('should not post greetings when name not provided', async () => {
+        const res = await request(app)
+            .post('/greetings')
+            .send({});
+        expect(res.statusCode).toEqual(400);
+        expect(res.body).toEqual('Please provide a name!');
+    });
 });
