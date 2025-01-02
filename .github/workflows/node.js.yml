@@ -1,0 +1,44 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
+    
+    - name: Deploy to Amazon Lightsail
+      if: success()
+      env:
+        LIGHTSAIL_HOST: ${{ secrets.LIGHTSAIL_HOST }}
+        LIGHTSAIL_USER: ${{ secrets.LIGHTSAIL_USER }} 
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }} 
+      run: |
+        echo "$SSH_PRIVATE_KEY" > lightsail_key.pem
+        chmod 600 lightsail_key.pem
+        ssh -o StrictHostKeyChecking=no -i lightsail_key.pem $LIGHTSAIL_USER@$LIGHTSAIL_HOST << 'EOF'
+          cd /home/bitnami/htdocs/ci-cd-project
+          git pull origin main
+          npm ci
+          npm start
+        EOF
+        rm -f lightsail_key.pem
