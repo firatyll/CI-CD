@@ -9,3 +9,7 @@ exports.postGreetings = (req, res) => {
     }
     res.status(200).json(`Greetings to ${name}!`);
 };
+
+exports.getLecture = (req,res)=>{
+    res.status(200).json('Welcome to the softwre development!')
+}
