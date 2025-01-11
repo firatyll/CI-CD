@@ -21,8 +21,8 @@ This project demonstrates how to implement a CI-CD pipeline using GitHub Actions
 
 ### Clone the Repository
 ```bash
-git clone <repository-url>
-cd <repository-folder>
+git clone https://github.com/firatyll/CI-CD.git
+cd /CI-CD
 ```
 
 ### Install Dependencies
